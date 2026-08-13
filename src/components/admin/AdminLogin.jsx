@@ -8,19 +8,19 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAdminAuth();
+  const { login, isSupabaseActive } = useAdminAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-    await new Promise(r => setTimeout(r, 600));
-    const success = login(email, password);
-    if (success) {
+    
+    const result = await login(email, password);
+    if (result.success) {
       navigate('/admin/dashboard');
     } else {
-      setError('Invalid email or password.');
+      setError(result.error || 'Invalid email or password.');
     }
     setIsLoading(false);
   };
@@ -36,14 +36,21 @@ const AdminLogin = () => {
         {/* Logo */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-black tracking-tight text-white">V.Deena</h1>
-          <p className="text-white/40 text-sm mt-2 font-medium tracking-widest uppercase">Admin Panel</p>
+          <p className="text-white/40 text-sm mt-2 font-medium tracking-widest uppercase flex items-center justify-center gap-2">
+            <span>Admin Panel</span>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full border ${isSupabaseActive ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'}`}>
+              {isSupabaseActive ? 'Supabase Connected' : 'Fallback Mode'}
+            </span>
+          </p>
         </div>
 
         {/* Card */}
         <div className="bg-[#111]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
           <div className="mb-8">
             <h2 className="text-2xl font-black text-white mb-1">Welcome back</h2>
-            <p className="text-white/40 text-sm">Sign in to access your dashboard</p>
+            <p className="text-white/40 text-sm">
+              {isSupabaseActive ? 'Sign in with your Supabase credentials' : 'Sign in to access your dashboard'}
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -53,7 +60,7 @@ const AdminLogin = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@example.com"
+                placeholder="deenaofficial1507@gmail.com"
                 required
                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-white/20 focus:outline-none focus:border-red-500/60 focus:bg-white/8 transition-all duration-200"
               />
@@ -99,7 +106,7 @@ const AdminLogin = () => {
               {isLoading ? (
                 <>
                   <svg className="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                  Signing in...
+                  Authenticating...
                 </>
               ) : 'Login'}
             </button>

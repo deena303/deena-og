@@ -1,5 +1,6 @@
 import React from 'react';
-import { leadershipList } from '../data/portfolioData';
+import { leadershipList as staticLeadershipList } from '../data/portfolioData';
+import { useData } from '../context/DataContext';
 
 const LeadershipItem = ({ item, index }) => {
   const isEven = index % 2 === 0;
@@ -42,6 +43,12 @@ const LeadershipItem = ({ item, index }) => {
 };
 
 const Leadership = () => {
+  const { data } = useData();
+  const rawLeadership = data?.leadership || staticLeadershipList;
+  const leadershipItems = rawLeadership
+    .filter(item => item.showLeadership !== false)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
   return (
     <section className="bg-[#0a0a0a] pt-24 pb-32 px-6 md:px-12 w-full relative overflow-hidden font-sans bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:80px_80px]">
       
@@ -74,8 +81,8 @@ const Leadership = () => {
 
           {/* Timeline Items */}
           <div className="w-full">
-            {leadershipList.map((item, index) => (
-              <LeadershipItem key={item.title} item={item} index={index} />
+            {leadershipItems.map((item, index) => (
+              <LeadershipItem key={item.id || item.title || index} item={item} index={index} />
             ))}
           </div>
         </div>

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { personalInfo } from '../data/portfolioData';
+import { personalInfo as staticPersonalInfo } from '../data/portfolioData';
+import { useData } from '../context/DataContext';
 
 const Preloader = () => {
+  const { data } = useData();
+  const personalInfo = data?.settings?.personalInfo || staticPersonalInfo;
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -33,7 +36,7 @@ const Preloader = () => {
           >
             {/* Background text (empty state) */}
             <div className="text-red-900/30">
-              {personalInfo.brandName.replace(' ', '')}
+              {personalInfo.brandName ? personalInfo.brandName.replace(' ', '') : ''}
             </div>
 
             {/* Foreground text (water fill state) */}
@@ -43,7 +46,7 @@ const Preloader = () => {
               animate={{ clipPath: 'inset(0% 0 0 0)' }}
               transition={{ duration: 1.6, ease: "easeInOut", delay: 0.2 }}
             >
-              {personalInfo.brandName.replace(' ', '')}
+              {personalInfo.brandName ? personalInfo.brandName.replace(' ', '') : ''}
             </motion.div>
           </motion.div>
 

@@ -4,10 +4,16 @@ import 'aos/dist/aos.css';
 import deenaAvatar from '../assets/about/deena-avatar.png';
 import deenaWorkspace from "@/assets/about/deena-workspace.png";
 import CursorCard from "./ui/cursor-card";
-import { heroContent, personalInfo, socialLinks } from '../data/portfolioData';
+import { heroContent as staticHeroContent, personalInfo as staticPersonalInfo, socialLinks as staticSocialLinks } from '../data/portfolioData';
+import { useData } from '../context/DataContext';
 import FlipFadeText from './ui/flip-fade-text';
 
 const Hero = () => {
+  const { data } = useData();
+  const heroContent = data?.settings?.heroContent || staticHeroContent;
+  const personalInfo = data?.settings?.personalInfo || staticPersonalInfo;
+  const socialLinks = data?.settings?.socialLinks || staticSocialLinks;
+
   useEffect(() => {
     AOS.init({
       duration: 1000,

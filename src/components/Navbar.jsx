@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { personalInfo } from '../data/portfolioData';
+import { personalInfo as staticPersonalInfo } from '../data/portfolioData';
+import { useData } from '../context/DataContext';
 import CreepyButton from './ui/creepy-button';
 
 const Navbar = () => {
+  const { data } = useData();
+  const personalInfo = data?.settings?.personalInfo || staticPersonalInfo;
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('');

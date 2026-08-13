@@ -1,5 +1,6 @@
 import React from 'react';
-import { contentCreation, socialLinks } from '../data/portfolioData';
+import { contentCreation, socialLinks as staticSocialLinks } from '../data/portfolioData';
+import { useData } from '../context/DataContext';
 
 const CreatorCard = ({ category, index }) => (
   <div 
@@ -34,6 +35,9 @@ const CreatorCard = ({ category, index }) => (
 );
 
 const ContentCreator = () => {
+  const { data } = useData();
+  const socialLinks = data?.settings?.socialLinks || staticSocialLinks;
+
   return (
     <section id="creator" className="bg-[#0a0a0a] pt-24 pb-32 px-6 md:px-12 w-full relative overflow-hidden font-sans bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:80px_80px]">
       

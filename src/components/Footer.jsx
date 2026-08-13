@@ -1,8 +1,14 @@
 import React from 'react';
-import { personalInfo, socialLinks, footerContent } from '../data/portfolioData';
+import { personalInfo as staticPersonalInfo, socialLinks as staticSocialLinks, footerContent as staticFooterContent } from '../data/portfolioData';
+import { useData } from '../context/DataContext';
 import SocialFlipButton from './ui/social-flip-button';
 
 const Footer = () => {
+  const { data } = useData();
+  const personalInfo = data?.settings?.personalInfo || staticPersonalInfo;
+  const socialLinks = data?.settings?.socialLinks || staticSocialLinks;
+  const footerContent = data?.settings?.footerContent || staticFooterContent;
+
   return (
     <footer className="bg-[#111111] text-[#d4d4d4] py-16 px-6 md:px-12 w-full font-mono text-[10px] md:text-xs tracking-widest flex flex-col justify-between min-h-[50vh]">
       
@@ -28,7 +34,7 @@ const Footer = () => {
       {/* Middle Huge Text */}
       <div className="w-full flex justify-center items-center py-20 md:py-24 overflow-hidden">
         <h2 className="text-[18vw] md:text-[16vw] leading-none font-sans font-bold tracking-tighter select-none text-[#f4f4f4] w-full text-center">
-          {personalInfo.brandName.replace(' ', '')}
+          {personalInfo.brandName ? personalInfo.brandName.replace(' ', '') : ''}
         </h2>
       </div>
 

@@ -1,5 +1,6 @@
 import React from 'react';
-import { internshipsList } from '../data/portfolioData';
+import { internshipsList as staticInternshipsList } from '../data/portfolioData';
+import { useData } from '../context/DataContext';
 
 const InternshipCard = ({ intern, index }) => (
   <div 
@@ -29,35 +30,46 @@ const InternshipCard = ({ intern, index }) => (
         <p className="text-white/70 text-sm font-medium leading-relaxed mb-6 whitespace-pre-line">
           {intern.description}
         </p>
-      )}      {/* Skills gained */}
-      <div className="mb-6">
-        <h4 className="text-white/60 text-xs font-bold uppercase tracking-wider mb-2">Skills Gained:</h4>
-        <ul className="text-white/90 text-sm font-medium space-y-1 pl-4 list-disc">
-          {intern.skills.map((skill, i) => (
-            <li key={i}>{skill}</li>
-          ))}
-        </ul>
-      </div>
+      )}
+      {/* Skills gained */}
+      {(intern.skills && intern.skills.length > 0) && (
+        <div className="mb-6">
+          <h4 className="text-white/60 text-xs font-bold uppercase tracking-wider mb-2">Skills Gained:</h4>
+          <ul className="text-white/90 text-sm font-medium space-y-1 pl-4 list-disc">
+            {intern.skills.map((skill, i) => (
+              <li key={i}>{skill}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
 
     {/* Technologies used */}
-    <div className="pt-4 border-t border-white/10">
-      <h4 className="text-white/60 text-xs font-bold uppercase tracking-wider mb-3">Technologies:</h4>
-      <div className="flex flex-wrap gap-2">
-        {intern.tech.map((t) => (
-          <span 
-            key={t}
-            className="px-3 py-1 text-xs font-mono font-bold text-white bg-white/10 rounded-full border border-white/10 hover:bg-white/20 transition-all"
-          >
-            {t}
-          </span>
-        ))}
+    {(intern.tech && intern.tech.length > 0) && (
+      <div className="pt-4 border-t border-white/10">
+        <h4 className="text-white/60 text-xs font-bold uppercase tracking-wider mb-3">Technologies:</h4>
+        <div className="flex flex-wrap gap-2">
+          {intern.tech.map((t) => (
+            <span 
+              key={t}
+              className="px-3 py-1 text-xs font-mono font-bold text-white bg-white/10 rounded-full border border-white/10 hover:bg-white/20 transition-all"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
       </div>
-    </div>
+    )}
   </div>
 );
 
 const Internships = () => {
+  const { data } = useData();
+  const rawExperience = data?.experience || staticInternshipsList;
+  const experiences = rawExperience
+    .filter(e => e.showExperience !== false)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
   return (
     <section className="bg-[#ff2a2a] pt-24 pb-32 px-6 md:px-12 w-full relative overflow-hidden font-sans">
       
@@ -82,8 +94,8 @@ const Internships = () => {
 
         {/* Internship Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-          {internshipsList.map((intern, index) => (
-            <InternshipCard key={intern.organization} intern={intern} index={index} />
+          {experiences.map((intern, index) => (
+            <InternshipCard key={intern.id || intern.organization || index} intern={intern} index={index} />
           ))}
         </div>
 

@@ -1,5 +1,6 @@
 import React from 'react';
-import { certificates } from '../data/portfolioData';
+import { certificates as staticCertificates } from '../data/portfolioData';
+import { useData } from '../context/DataContext';
 
 const CertificateCard = ({ cert, aosDelay }) => (
   <div 
@@ -38,6 +39,12 @@ const CertificateCard = ({ cert, aosDelay }) => (
 );
 
 const Certificates = () => {
+  const { data } = useData();
+  const rawCertificates = data?.certificates || staticCertificates.featured;
+  const certificateList = rawCertificates
+    .filter(c => c.showCertificate !== false)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
   return (
     <section className="bg-[#ff2a2a] pt-20 pb-28 px-6 md:px-12 w-full relative overflow-hidden font-sans">
       
@@ -61,9 +68,9 @@ const Certificates = () => {
 
         {/* Certificate Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-12">
-          {certificates.featured.map((cert, index) => (
+          {certificateList.map((cert, index) => (
             <CertificateCard 
-              key={cert.name} 
+              key={cert.id || cert.name || index} 
               cert={cert} 
               aosDelay={String((index + 1) * 100)} 
             />

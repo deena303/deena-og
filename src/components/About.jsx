@@ -3,7 +3,8 @@ import stackImage from '../assets/about/deena-avatar.png';
 import deenaWorkspace from "@/assets/about/deena-workspace.png";
 import CursorCard from "./ui/cursor-card";
 import SmoothMarquee from "./ui/SmoothMarquee";
-import { aboutContent } from '../data/portfolioData';
+import { aboutContent as staticAboutContent } from '../data/portfolioData';
+import { useData } from '../context/DataContext';
 import TextPressure from './ui/TextPressure';
 import VariableProximity from './ui/VariableProximity';
 
@@ -37,6 +38,8 @@ const techLogos = [
 ];
 
 const About = () => {
+  const { data } = useData();
+  const aboutContent = data?.settings?.aboutContent || staticAboutContent;
   const containerRef = useRef(null);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
