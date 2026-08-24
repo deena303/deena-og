@@ -3,7 +3,7 @@ import { useData } from '../../context/DataContext';
 import { useToast } from '../../context/ToastContext';
 
 const AdminSettings = () => {
-  const { data, updateData } = useData();
+  const { data, updateData, resetToDefaults } = useData();
   const { addToast } = useToast();
   const [settings, setSettings] = useState(data.settings);
 
@@ -23,7 +23,7 @@ const AdminSettings = () => {
 
   const handleSave = () => {
     updateData('settings', settings);
-    addToast('Settings saved successfully!', 'success');
+    addToast('Settings saved to Supabase!', 'success');
   };
 
   const personal = settings.personalInfo || {};
@@ -34,7 +34,7 @@ const AdminSettings = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h2 className="text-3xl font-black text-white">Settings</h2>
-          <p className="text-white/40 text-sm mt-1">Portfolio information and configuration</p>
+          <p className="text-white/40 text-sm mt-1">Portfolio configuration & Supabase synchronization</p>
         </div>
         <button onClick={handleSave} className="bg-red-500 hover:bg-red-600 text-white text-sm font-bold px-6 py-2.5 rounded-xl transition-colors">
           Save Changes
@@ -110,10 +110,10 @@ const AdminSettings = () => {
           </div>
         </div>
 
-        {/* Export / Import */}
+        {/* Export / Import & Reset */}
         <div className="bg-[#111]/80 border border-white/10 rounded-2xl p-6">
-          <h3 className="text-lg font-bold text-white mb-2">Data Management</h3>
-          <p className="text-white/30 text-sm mb-5">Export all portfolio data as JSON or import from a JSON file.</p>
+          <h3 className="text-lg font-bold text-white mb-2">Supabase Data Management</h3>
+          <p className="text-white/30 text-sm mb-5">Export all Supabase data as JSON or reset the database back to default seed data.</p>
           <div className="flex gap-3 flex-wrap">
             <button
               onClick={() => {
@@ -121,17 +121,17 @@ const AdminSettings = () => {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'portfolio-data.json';
+                a.download = 'supabase-portfolio-data.json';
                 a.click();
                 URL.revokeObjectURL(url);
-                addToast('Data exported!', 'success');
+                addToast('Data exported from Supabase!', 'success');
               }}
               className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-semibold hover:bg-white/10 transition-colors"
             >
               📥 Export JSON
             </button>
             <label className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-semibold hover:bg-white/10 transition-colors cursor-pointer">
-              📤 Import JSON
+              📤 Import JSON to Supabase
               <input
                 type="file"
                 accept=".json"
@@ -140,13 +140,13 @@ const AdminSettings = () => {
                   const file = e.target.files[0];
                   if (!file) return;
                   const reader = new FileReader();
-                  reader.onload = (ev) => {
+                  reader.onload = async (ev) => {
                     try {
                       const imported = JSON.parse(ev.target.result);
-                      ['projects', 'skills', 'certificates', 'experience', 'leadership', 'settings'].forEach(k => {
-                        if (imported[k]) updateData(k, imported[k]);
-                      });
-                      addToast('Data imported successfully!', 'success');
+                      for (const k of ['projects', 'skills', 'certificates', 'experience', 'leadership', 'settings']) {
+                        if (imported[k]) await updateData(k, imported[k]);
+                      }
+                      addToast('Data synced to Supabase successfully!', 'success');
                     } catch {
                       addToast('Invalid JSON file.', 'error');
                     }
@@ -157,15 +157,19 @@ const AdminSettings = () => {
               />
             </label>
             <button
-              onClick={() => {
-                if (window.confirm('This will RESET all data to defaults from portfolioData.js. Are you sure?')) {
-                  localStorage.removeItem('portfolio_data');
-                  window.location.reload();
+              onClick={async () => {
+                if (window.confirm('This will RESET the Supabase database to default seed data. Are you sure?')) {
+                  const success = await resetToDefaults();
+                  if (success) {
+                    addToast('Supabase database reset to defaults!', 'success');
+                  } else {
+                    addToast('Failed to reset Supabase database.', 'error');
+                  }
                 }
               }}
               className="px-5 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-semibold hover:bg-red-500/20 transition-colors"
             >
-              🔄 Reset to Defaults
+              🔄 Reset Supabase to Defaults
             </button>
           </div>
         </div>
@@ -175,3 +179,4 @@ const AdminSettings = () => {
 };
 
 export default AdminSettings;
+

@@ -38,8 +38,8 @@ const AdminLogin = () => {
           <h1 className="text-4xl font-black tracking-tight text-white">V.Deena</h1>
           <p className="text-white/40 text-sm mt-2 font-medium tracking-widest uppercase flex items-center justify-center gap-2">
             <span>Admin Panel</span>
-            <span className={`text-[10px] px-2 py-0.5 rounded-full border ${isSupabaseActive ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'}`}>
-              {isSupabaseActive ? 'Supabase Connected' : 'Fallback Mode'}
+            <span className="text-[10px] px-2.5 py-0.5 rounded-full border bg-green-500/10 text-green-400 border-green-500/20 font-mono">
+              Supabase Auth
             </span>
           </p>
         </div>
@@ -49,7 +49,7 @@ const AdminLogin = () => {
           <div className="mb-8">
             <h2 className="text-2xl font-black text-white mb-1">Welcome back</h2>
             <p className="text-white/40 text-sm">
-              {isSupabaseActive ? 'Sign in with your Supabase credentials' : 'Sign in to access your dashboard'}
+              Sign in with your Supabase credentials
             </p>
           </div>
 
